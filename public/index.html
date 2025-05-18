@@ -376,26 +376,38 @@
       }
     </style>
     <script>
-      // Force users to stay on this site, even if they try to go back
-      window.onload = function() {
-        // Overwrite the current history entry with this site
-        history.replaceState(null, '', location.href);
-        // Add a new entry for this site
-        history.pushState(null, '', location.href);
-        window.onpopstate = function(event) {
-          // Always push forward to stay on this site
-          history.pushState(null, '', location.href);
-        };
-      };
+      // // Force users to stay on this site, even if they try to go back
+      // window.onload = function() {
+      //   // Overwrite the current history entry with this site
+      //   history.replaceState(null, '', location.href);
+      //   // Add a new entry for this site
+      //   history.pushState(null, '', location.href);
+      //   window.onpopstate = function(event) {
+      //     // Always push forward to stay on this site
+      //     history.pushState(null, '', location.href);
+      //   };
+      // };
+
+      // On page load, show the correct section based on the hash
+      function showSectionFromHash() {
+        if (window.location.hash === '#play') {
+          document.getElementById('landing-page').style.display = 'none';
+          document.getElementById('root').style.display = 'block';
+        } else {
+          document.getElementById('landing-page').style.display = 'block';
+          document.getElementById('root').style.display = 'none';
+        }
+      }
+      window.addEventListener('DOMContentLoaded', showSectionFromHash);
+      window.addEventListener('hashchange', showSectionFromHash);
 
       function showReactApp() {
-        document.getElementById('landing-page').style.display = 'none';
-        document.getElementById('root').style.display = 'block';
-        // Prevent back navigation to landing page
-        history.pushState(null, '', location.href);
-        window.onpopstate = function() {
-          history.pushState(null, '', location.href);
-        };
+        window.location.hash = '#play';
+        // Force reload to ensure React mounts
+        if (!window._reactAppLoaded) {
+          window.location.reload();
+          window._reactAppLoaded = true;
+        }
       }
 
       function goHome() {
